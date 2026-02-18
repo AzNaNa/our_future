@@ -1,0 +1,157 @@
+:root {
+  --rose: #dba7b4;
+  --peach: #f7c9aa;
+  --beige: #f7efe4;
+  --text: #5a4350;
+  --card: #fff8f2;
+  --accent: #b86b7e;
+  --shadow: 0 12px 30px rgba(168, 110, 127, 0.2);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #fff9f7 0%, var(--beige) 100%);
+}
+
+img { max-width: 100%; display: block; border-radius: 16px; }
+a { color: inherit; text-decoration: none; }
+
+.container { width: min(1100px, 92%); margin: 0 auto; }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 248, 242, 0.85);
+  border-bottom: 1px solid rgba(184, 107, 126, 0.2);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--accent); }
+.logo i { margin-right: 0.35rem; }
+
+nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+nav a {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  transition: 0.2s;
+  font-weight: 700;
+}
+nav a:hover, nav a.active { background: var(--rose); color: white; }
+
+.counter {
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 12px;
+  padding: 0.45rem 0.65rem;
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  padding: 3rem 0 2rem;
+  display: grid;
+  gap: 1.2rem;
+}
+.hero-card, .panel {
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 1.2rem;
+}
+.hero h1 { font-family: 'Playfair Display', serif; margin-top: 0; }
+
+.grid { display: grid; gap: 1rem; }
+.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+.card:hover { transform: translateY(-4px); }
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn.secondary { background: #8a7a85; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.message { border-left: 4px solid var(--rose); }
+
+.stickers { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.sticker {
+  background: #fffef5;
+  padding: 0.9rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(98, 76, 86, 0.18);
+  transform: rotate(-1deg);
+}
+.sticker:nth-child(even) { transform: rotate(1.2deg); }
+
+.form-stack { display: grid; gap: 0.8rem; }
+input, select, textarea {
+  width: 100%;
+  border: 1px solid #eac6d0;
+  border-radius: 10px;
+  padding: 0.65rem;
+  font: inherit;
+}
+
+.polaroid-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; }
+.polaroid {
+  background: white;
+  padding: 0.6rem 0.6rem 1.2rem;
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+  transform: rotate(var(--rot, -2deg));
+  transition: transform 0.2s ease;
+}
+.polaroid:hover { transform: rotate(0deg) scale(1.04); }
+
+.fade-in { animation: fade 0.6s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
+
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 22, 34, 0.8);
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 99;
+}
+.lightbox.open { display: flex; }
+.lightbox img { max-height: 85vh; }
+
+footer { margin-top: 3rem; padding: 2rem 0; }
+.playlist iframe { width: 100%; border: 0; border-radius: 14px; }
+
+.status { font-size: 0.92rem; color: #7d4858; }
+.error { color: #a22143; font-weight: 700; }
+
+#map { height: 65vh; border-radius: 20px; box-shadow: var(--shadow); }
+
+@media (max-width: 760px) {
+  .header-inner { flex-direction: column; align-items: stretch; }
+  nav ul { justify-content: center; }
+}
