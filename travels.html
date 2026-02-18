@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Путешествия — Соня и Я</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+  <header class="site-header"><div class="container header-inner"><a class="logo" href="index.html"><i class="fa-solid fa-heart"></i> Соня & Я</a><nav><ul><li><a href="index.html">Главная</a></li><li><a class="active" href="travels.html">Путешествия</a></li><li><a href="dates.html">Даты</a></li><li><a href="wall.html">Стена</a></li><li><a href="capsule.html">Капсула</a></li><li><a href="map.html">Карта</a></li><li><a href="mood.html">Настроение</a></li></ul></nav><div class="counter" id="relationshipCounter"></div></div></header>
+  <main class="container hero">
+    <section class="panel">
+      <h1>Наши путешествия</h1>
+      <p>Список подтягивается в реальном времени из коллекции <code>countries</code>.</p>
+      <div id="countriesGrid" class="grid cols-3 status">Загрузка стран...</div>
+    </section>
+  </main>
+  <script type="module" src="assets/js/travels.js"></script>
+</body>
+</html>
