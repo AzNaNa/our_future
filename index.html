@@ -37,7 +37,7 @@
 
   <main class="container hero">
     <section class="hero-card fade-in">
-      <h1>Наша нежная история любви</h1>
+      <h1>Наша личная шкатулка воспоминаний </h1>
       <p>Кисуля моя, этот сайт , который я делал с огромной любовью к тебе, будет хранить наши путешествия, важные даты
         и тёплые
         слова, которые мы можем перечитывать вместе.</p>
@@ -59,8 +59,23 @@
       </article>
 
       <article class="panel fade-in">
-        <h2><i class="fa-regular fa-calendar"></i> Ближайшее событие</h2>
-        <div id="nextEventContainer" class="status">Ищем событие...</div>
+        <h2><i class="fa-regular fa-calendar"></i> Наши события</h2>
+        <div id="eventsCarousel" class="events-carousel">
+          <div id="eventsContainer" class="events-container">
+            <!-- События будут загружаться сюда -->
+          </div>
+
+          <div class="carousel-controls">
+            <button id="prevEventBtn" class="carousel-btn" disabled>
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button id="nextEventBtn" class="carousel-btn" disabled>
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <div id="eventCounter" class="event-counter"></div>
+        </div>
       </article>
     </section>
   </main>

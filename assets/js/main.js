@@ -24,12 +24,18 @@ function pluralDays(number) {
   return 'дней';
 }
 
+// DOM элементы
 const memoryContainer = document.getElementById('memoryContainer');
 const randomMemoryBtn = document.getElementById('randomMemoryBtn');
-const nextEventContainer = document.getElementById('nextEventContainer');
+const eventsContainer = document.getElementById('eventsContainer');
+const prevEventBtn = document.getElementById('prevEventBtn');
+const nextEventBtn = document.getElementById('nextEventBtn');
+const eventCounter = document.getElementById('eventCounter');
 let memories = [];
+let allEvents = [];
+let currentEventIndex = 0;
 
-// ОБЪЯВЛЯЕМ ФУНКЦИИ СНАЧАЛА
+// ===== ФУНКЦИИ ДЛЯ ВОСПОМИНАНИЙ =====
 async function loadMemories() {
   try {
     const snapshot = await getDocs(collection(db, 'memories'));
@@ -51,67 +57,113 @@ function showRandomMemory() {
   memoryContainer.innerHTML = `<img src="${random.photo}" alt="Воспоминание"><p>${random.text || ''}</p>`;
 }
 
-async function loadNextEvent() {
+// ===== ФУНКЦИИ ДЛЯ КАРУСЕЛИ СОБЫТИЙ =====
+async function loadEvents() {
   try {
     const snapshot = await getDocs(collection(db, 'dates'));
-    const dates = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-    if (!dates.length) {
-      nextEventContainer.textContent = 'Добавьте документы в коллекцию dates.';
+    allEvents = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+    if (!allEvents.length) {
+      eventsContainer.innerHTML = '<div class="no-events">Добавьте события в коллекцию dates</div>';
+      if (prevEventBtn) prevEventBtn.disabled = true;
+      if (nextEventBtn) nextEventBtn.disabled = true;
       return;
     }
 
+    // Сортируем все события по дате (от старых к новым)
+    allEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Находим индекс ближайшего будущего события для старта
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
-    const future = dates
-      .filter((item) => {
-        const itemDate = new Date(item.date);
-        itemDate.setHours(0, 0, 0, 0);
-        return itemDate >= now;
-      })
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    currentEventIndex = allEvents.findIndex(event => {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= now;
+    });
 
-    const chosen = future[0] || dates.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-    const eventDate = new Date(chosen.date);
-    eventDate.setHours(0, 0, 0, 0);
-    const delta = daysBetween(now, eventDate);
-
-    const absDelta = Math.abs(delta);
-    const word = pluralDays(absDelta);
-
-    let progress = 0;
-    let progressText = '';
-
-    if (delta > 0) {
-      const daysTotal = 365;
-      progress = Math.min(100, Math.round((daysTotal - delta) / daysTotal * 100));
-      progressText = `${progress}% до события`;
-    } else if (delta < 0) {
-      progress = 100;
-      progressText = `Событие прошло ${absDelta} ${word} назад`;
-    } else {
-      progress = 100;
-      progressText = 'Событие сегодня! ✨';
+    // Если нет будущих событий, показываем последнее
+    if (currentEventIndex === -1) {
+      currentEventIndex = allEvents.length - 1;
     }
 
-    const label = delta > 0 ? `через ${delta} ${word}` :
-      delta < 0 ? `${absDelta} ${word} назад` :
-        'сегодня!';
+    // Обновляем кнопки и показываем событие
+    updateCarouselButtons();
+    displayEvent(currentEventIndex);
 
-    const randomQuote = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
+  } catch (error) {
+    console.error('Ошибка загрузки событий:', error);
+    eventsContainer.innerHTML = '<div class="error">Не удалось загрузить события</div>';
+  }
+}
 
-    nextEventContainer.innerHTML = `
-      <div class="event-stats">
-        <h3>${chosen.title}</h3>
-        <p style="font-size: 1.2rem; color: var(--accent); font-weight: bold;">${label}</p>
+function displayEvent(index) {
+  if (!allEvents.length || index < 0 || index >= allEvents.length) return;
+
+  const event = allEvents[index];
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const eventDate = new Date(event.date);
+  eventDate.setHours(0, 0, 0, 0);
+
+  const delta = daysBetween(now, eventDate);
+  const absDelta = Math.abs(delta);
+  const word = pluralDays(absDelta);
+
+  // Прогресс-бар
+  let progress = 0;
+  let progressText = '';
+
+  if (delta > 0) {
+    const daysTotal = 365;
+    progress = Math.min(100, Math.round((daysTotal - delta) / daysTotal * 100));
+    progressText = `${progress}% до события`;
+  } else if (delta < 0) {
+    progress = 100;
+    progressText = `Прошло ${absDelta} ${word}`;
+  } else {
+    progress = 100;
+    progressText = 'Событие сегодня! ✨';
+  }
+
+  const label = delta > 0 ? `через ${delta} ${word}` :
+    delta < 0 ? `${absDelta} ${word} назад` :
+      'сегодня!';
+
+  const randomQuote = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
+
+  // Форматируем дату
+  const formattedDate = eventDate.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Анимация
+  eventsContainer.classList.add('fade-out');
+
+  setTimeout(() => {
+    eventsContainer.innerHTML = `
+      <div class="event-card">
+        <h3 class="event-title">${event.title}</h3>
+        <div class="event-date-badge">
+          <i class="fa-regular fa-calendar"></i> ${formattedDate}
+        </div>
         
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: ${progress}%"></div>
-          </div>
-          <div class="progress-label">
-            <i class="fa-regular fa-clock"></i> ${progressText}
+        <div class="event-countdown">
+          <span style="color: var(--accent); font-weight: bold;">${label}</span>
+        </div>
+        
+        <div class="event-progress">
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+            <div class="progress-label">
+              <i class="fa-regular fa-clock"></i> ${progressText}
+            </div>
           </div>
         </div>
         
@@ -119,31 +171,48 @@ async function loadNextEvent() {
           <i class="fa-regular fa-heart"></i> ${randomQuote.text}
           <div class="quote-author">— ${randomQuote.author}</div>
         </div>
-        
-        ${delta > 0 ? `
-          <p style="font-size: 0.9rem; margin-top: 0.8rem; opacity: 0.8;">
-            <i class="fa-regular fa-calendar-check"></i> 
-            ${eventDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
-          </p>
-        ` : ''}
       </div>
     `;
-  } catch (error) {
-    console.error('Ошибка загрузки событий:', error);
-    nextEventContainer.textContent = 'Не удалось загрузить события.';
-    nextEventContainer.classList.add('error');
+
+    eventsContainer.classList.remove('fade-out');
+  }, 200);
+
+  // Обновляем счетчик
+  if (eventCounter) {
+    eventCounter.textContent = `${index + 1} из ${allEvents.length}`;
   }
+  updateCarouselButtons();
 }
 
-// ТЕПЕРЬ ВЫЗЫВАЕМ ФУНКЦИИ
+function updateCarouselButtons() {
+  if (prevEventBtn) prevEventBtn.disabled = currentEventIndex <= 0;
+  if (nextEventBtn) nextEventBtn.disabled = currentEventIndex >= allEvents.length - 1;
+}
+
+// ===== ЗАПУСК =====
 await renderRelationshipCounter();
 
 if (!firebaseReady) {
   renderFirebaseHint(memoryContainer);
-  renderFirebaseHint(nextEventContainer);
-  randomMemoryBtn.disabled = true;
+  renderFirebaseHint(eventsContainer);
+  if (randomMemoryBtn) randomMemoryBtn.disabled = true;
+  if (prevEventBtn) prevEventBtn.disabled = true;
+  if (nextEventBtn) nextEventBtn.disabled = true;
 } else {
-  await Promise.all([loadMemories(), loadNextEvent()]);
+  await Promise.all([loadMemories(), loadEvents()]);
 }
 
-randomMemoryBtn?.addEventListener('click', () => showRandomMemory());
+// Обработчики
+randomMemoryBtn?.addEventListener('click', showRandomMemory);
+prevEventBtn?.addEventListener('click', () => {
+  if (currentEventIndex > 0) {
+    currentEventIndex--;
+    displayEvent(currentEventIndex);
+  }
+});
+nextEventBtn?.addEventListener('click', () => {
+  if (currentEventIndex < allEvents.length - 1) {
+    currentEventIndex++;
+    displayEvent(currentEventIndex);
+  }
+});
