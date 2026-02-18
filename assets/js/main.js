@@ -1,6 +1,20 @@
 import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 import { db, firebaseReady, daysBetween, renderFirebaseHint, renderRelationshipCounter } from './common.js';
 
+// Массив романтичных цитат (можно добавить свои)
+const loveQuotes = [
+  { text: "Каждый день с тобой — особенный, даже если он просто в телемосте)", author: "Соня" },
+  { text: "Счастье — это делать тебе массаж ножек слушая мияги))", author: "Азна" },
+  { text: "Ты делаешь мою жизнь ярче, и гораздо вкуснее", author: "Соня" },
+  { text: "Любовь — это слушать каждую твою историю в твоей эмоциональной подаче", author: "Азна" },
+  { text: "Hey, you)", author: "Соня" },
+  { text: "Ты — моя самая самая вкусная киса", author: "Азна" },
+  { text: "Каждый день с тобой, самый лучший", author: "Соня" },
+  { text: "Я люблю тебя, даже когда ты вредная змеючка", author: "Азна" },
+  { text: "Тебя достаточно)", author: "Соня" },
+  { text: "Наша история только начинается", author: "Азна" }
+];
+
 function pluralDays(number) {
   const lastDigit = number % 10;
   const lastTwoDigits = number % 100;
@@ -47,20 +61,6 @@ function showRandomMemory() {
   const random = memories[Math.floor(Math.random() * memories.length)];
   memoryContainer.innerHTML = `<img src="${random.photo}" alt="Воспоминание"><p>${random.text || ''}</p>`;
 }
-
-// Массив романтичных цитат (можно добавить свои)
-const loveQuotes = [
-  { text: "Каждый день с тобой — особенный, даже если он просто в телемосте)", author: "Соня" },
-  { text: "Счастье — это делать тебе массаж ножек слушая мияги))", author: "Азна" },
-  { text: "Ты делаешь мою жизнь ярче, и гораздо вкуснее", author: "Соня" },
-  { text: "Любовь — это слушать каждую твою историю в твоей эмоциональной подаче", author: "Азна" },
-  { text: "Hey, you)", author: "Соня" },
-  { text: "Ты — моя самая самая вкусная киса", author: "Азна" },
-  { text: "Каждый день с тобой, самый лучший", author: "Соня" },
-  { text: "Я люблю тебя, даже когда ты вредная змеючка", author: "Азна" },
-  { text: "Тебя достаточно)", author: "Соня" },
-  { text: "Наша история только начинается", author: "Азна" }
-];
 
 async function loadNextEvent() {
   try {
