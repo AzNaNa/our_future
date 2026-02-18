@@ -1,7 +1,7 @@
 import { collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
 import { db, firebaseReady, daysBetween, renderFirebaseHint, renderRelationshipCounter } from './common.js';
 
-// Массив романтичных цитат (можно добавить свои)
+// Массив романтичных цитат
 const loveQuotes = [
   { text: "Каждый день с тобой — особенный, даже если он просто в телемосте)", author: "Соня" },
   { text: "Счастье — это делать тебе массаж ножек слушая мияги))", author: "Азна" },
@@ -29,18 +29,7 @@ const randomMemoryBtn = document.getElementById('randomMemoryBtn');
 const nextEventContainer = document.getElementById('nextEventContainer');
 let memories = [];
 
-await renderRelationshipCounter();
-
-if (!firebaseReady) {
-  renderFirebaseHint(memoryContainer);
-  renderFirebaseHint(nextEventContainer);
-  randomMemoryBtn.disabled = true;
-} else {
-  await Promise.all([loadMemories(), loadNextEvent()]);
-}
-
-randomMemoryBtn?.addEventListener('click', () => showRandomMemory());
-
+// ОБЪЯВЛЯЕМ ФУНКЦИИ СНАЧАЛА
 async function loadMemories() {
   try {
     const snapshot = await getDocs(collection(db, 'memories'));
@@ -72,7 +61,6 @@ async function loadNextEvent() {
     }
 
     const now = new Date();
-    // Обнуляем время для корректного сравнения
     now.setHours(0, 0, 0, 0);
 
     const future = dates
@@ -85,29 +73,24 @@ async function loadNextEvent() {
 
     const chosen = future[0] || dates.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
-    // Вычисляем дни до/после события
     const eventDate = new Date(chosen.date);
     eventDate.setHours(0, 0, 0, 0);
-    const delta = daysBetween(now, eventDate); // положительное если событие в будущем
+    const delta = daysBetween(now, eventDate);
 
     const absDelta = Math.abs(delta);
     const word = pluralDays(absDelta);
 
-    // Для прогресс-бара: используем 365 дней как полный цикл
     let progress = 0;
     let progressText = '';
 
     if (delta > 0) {
-      // Будущее событие
       const daysTotal = 365;
       progress = Math.min(100, Math.round((daysTotal - delta) / daysTotal * 100));
       progressText = `${progress}% до события`;
     } else if (delta < 0) {
-      // Прошедшее событие
       progress = 100;
       progressText = `Событие прошло ${absDelta} ${word} назад`;
     } else {
-      // Сегодня
       progress = 100;
       progressText = 'Событие сегодня! ✨';
     }
@@ -116,7 +99,6 @@ async function loadNextEvent() {
       delta < 0 ? `${absDelta} ${word} назад` :
         'сегодня!';
 
-    // Выбираем случайную цитату
     const randomQuote = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
 
     nextEventContainer.innerHTML = `
@@ -152,3 +134,16 @@ async function loadNextEvent() {
     nextEventContainer.classList.add('error');
   }
 }
+
+// ТЕПЕРЬ ВЫЗЫВАЕМ ФУНКЦИИ
+await renderRelationshipCounter();
+
+if (!firebaseReady) {
+  renderFirebaseHint(memoryContainer);
+  renderFirebaseHint(nextEventContainer);
+  randomMemoryBtn.disabled = true;
+} else {
+  await Promise.all([loadMemories(), loadNextEvent()]);
+}
+
+randomMemoryBtn?.addEventListener('click', () => showRandomMemory());
