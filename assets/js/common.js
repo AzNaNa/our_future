@@ -9,7 +9,6 @@ export async function renderRelationshipCounter() {
 
   let startDate = RELATIONSHIP_START_FALLBACK;
 
-  // Optional: fetch relationship start date from settings/relationship doc.
   if (firebaseReady) {
     try {
       const settingsDoc = await getDoc(doc(db, 'settings', 'relationship'));
@@ -23,7 +22,19 @@ export async function renderRelationshipCounter() {
 
   const diffMs = Date.now() - new Date(startDate).getTime();
   const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
-  counter.textContent = `Мы вместе уже ${days} дней`;
+
+  // Функция склонения
+  function pluralDays(number) {
+    const lastDigit = number % 10;
+    const lastTwoDigits = number % 100;
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) return 'дней';
+    if (lastDigit === 1) return 'день';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'дня';
+    return 'дней';
+  }
+
+  const word = pluralDays(days);
+  counter.textContent = `Мы вместе уже ${days} ${word}`;
 }
 
 export function renderFirebaseHint(el) {
