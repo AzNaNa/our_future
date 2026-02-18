@@ -1,8 +1,47 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Капсула времени</title><link rel="stylesheet" href="assets/css/style.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" /></head>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Капсула времени</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
 <body>
-<header class="site-header"><div class="container header-inner"><a class="logo" href="index.html"><i class="fa-solid fa-heart"></i> Соня & Я</a><nav><ul><li><a href="index.html">Главная</a></li><li><a href="travels.html">Путешествия</a></li><li><a href="dates.html">Даты</a></li><li><a href="wall.html">Стена</a></li><li><a class="active" href="capsule.html">Капсула</a></li><li><a href="map.html">Карта</a></li><li><a href="mood.html">Настроение</a></li></ul></nav><div class="counter" id="relationshipCounter"></div></div></header>
-<main class="container hero"><section class="panel"><h1>Секретная капсула времени</h1><p>Введите пароль (например, дата знакомства в формате YYYY-MM-DD).</p><form id="capsuleForm" class="form-stack"><input id="capsulePassword" type="password" required placeholder="Пароль"><button class="btn" type="submit">Открыть</button></form><div id="capsuleStatus" class="status"></div><div id="capsuleContent" hidden><h2>Личное письмо</h2><p>Спасибо за каждый день вместе. Пусть впереди нас ждёт ещё больше уютных моментов 💗</p><img src="assets/images/capsule.jpg" alt="Фото из капсулы" onerror="this.style.display='none'"></div></section></main>
-<script type="module" src="assets/js/capsule.js"></script>
-</body></html>
+    <header class="site-header">
+        <div class="container header-inner"><a class="logo" href="index.html"><i class="fa-solid fa-heart"></i> Соня &
+                Азна</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="travels.html">Путешествия</a></li>
+                    <li><a href="dates.html">Даты</a></li>
+                    <li><a href="wall.html">Стена</a></li>
+                    <li><a class="active" href="capsule.html">Капсула</a></li>
+                    <li><a href="map.html">Карта</a></li>
+                    <li><a href="mood.html">Настроение</a></li>
+                </ul>
+            </nav>
+            <div class="counter" id="relationshipCounter"></div>
+        </div>
+    </header>
+    <main class="container hero">
+        <section class="panel">
+            <h1>Секретная капсула времени</h1>
+            <p>Введите пароль (например, дата знакомства в формате YYYY-MM-DD).</p>
+            <form id="capsuleForm" class="form-stack"><input id="capsulePassword" type="password" required
+                    placeholder="Пароль"><button class="btn" type="submit">Открыть</button></form>
+            <div id="capsuleStatus" class="status"></div>
+            <div id="capsuleContent" hidden>
+                <h2>Личное письмо</h2>
+                <p>Спасибо за каждый день вместе. Пусть впереди нас ждёт ещё больше уютных моментов 💗</p><img
+                    src="assets/images/capsule.jpg" alt="Фото из капсулы" onerror="this.style.display='none'">
+            </div>
+        </section>
+    </main>
+    <script type="module" src="assets/js/capsule.js"></script>
+</body>
+
+</html>
